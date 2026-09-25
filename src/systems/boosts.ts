@@ -19,7 +19,7 @@ export function activateBoost(s: GameState, mods: Modifiers, rates: Rates, id: B
 }
 
 /** Spends a boost token to clear a cooldown. */
-export function useBoostToken(s: GameState, id: BoostId): boolean {
+export function spendBoostToken(s: GameState, id: BoostId): boolean {
   if (s.boostTokens <= 0 || s.boosts[id].cooldown <= 0) return false;
   s.boostTokens--;
   s.boosts[id].cooldown = 0;
