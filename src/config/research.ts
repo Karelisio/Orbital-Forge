@@ -1,3 +1,4 @@
+import { scaledCost } from './balance';
 import type { Cost, Effect } from './types';
 
 export interface ResearchDef {
@@ -12,7 +13,7 @@ export interface ResearchDef {
 const H = 3600;
 const M = 60;
 
-export const RESEARCH: readonly ResearchDef[] = [
+const RAW: ResearchDef[] = [
   {
     id: 'r_drills',
     cost: { res: 'metal', amount: 50 },
@@ -327,6 +328,8 @@ export const RESEARCH: readonly ResearchDef[] = [
     effects: [{ k: 'mul', stat: 'global', v: 3 }],
   },
 ];
+
+export const RESEARCH: readonly ResearchDef[] = RAW.map((r) => ({ ...r, cost: scaledCost(r.cost) }));
 
 export const RESEARCH_BY_ID: Readonly<Record<string, ResearchDef>> = Object.fromEntries(
   RESEARCH.map((r) => [r.id, r]),

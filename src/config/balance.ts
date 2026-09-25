@@ -22,9 +22,9 @@ export interface TierBalance {
 export const TIER_BALANCE: Record<ResourceId, TierBalance> = {
   ore: {
     baseCost: 15,
-    costStep: 11,
-    baseRate: 0.5,
-    rateStep: 7,
+    costStep: 12,
+    baseRate: 0.2,
+    rateStep: 6.5,
     growth: 1.07,
     growthStep: 0.005,
     ratio: 0,
@@ -32,65 +32,83 @@ export const TIER_BALANCE: Record<ResourceId, TierBalance> = {
   },
   metal: {
     baseCost: 300,
-    costStep: 11,
+    costStep: 12,
     baseRate: 0.1,
-    rateStep: 7,
+    rateStep: 6.5,
     growth: 1.08,
     growthStep: 0.005,
     ratio: 10,
-    value: 25,
+    value: 20,
   },
   alloy: {
-    baseCost: 400,
-    costStep: 11,
-    baseRate: 0.05,
-    rateStep: 7,
+    baseCost: 1.5e4,
+    costStep: 12,
+    baseRate: 1,
+    rateStep: 6.5,
     growth: 1.09,
     growthStep: 0.005,
     ratio: 12,
-    value: 800,
+    value: 480,
   },
   component: {
-    baseCost: 500,
-    costStep: 11,
-    baseRate: 0.03,
-    rateStep: 7,
+    baseCost: 2e9,
+    costStep: 12,
+    baseRate: 3.3e4,
+    rateStep: 6.5,
     growth: 1.1,
     growthStep: 0.005,
     ratio: 15,
-    value: 3.5e4,
+    value: 14400,
   },
   energy: {
-    baseCost: 600,
-    costStep: 11,
-    baseRate: 0.02,
-    rateStep: 7,
+    baseCost: 7e13,
+    costStep: 12,
+    baseRate: 2.9e8,
+    rateStep: 6.5,
     growth: 1.1,
     growthStep: 0.005,
     ratio: 20,
-    value: 2e6,
+    value: 576000,
   },
   crystal: {
-    baseCost: 800,
-    costStep: 11,
-    baseRate: 0.01,
-    rateStep: 7,
+    baseCost: 1.7e18,
+    costStep: 12,
+    baseRate: 2.3e12,
+    rateStep: 6.5,
     growth: 1.11,
     growthStep: 0.005,
     ratio: 25,
-    value: 1.5e8,
+    value: 2.88e7,
   },
   darkMatter: {
-    baseCost: 1000,
-    costStep: 11,
-    baseRate: 0.005,
-    rateStep: 7,
+    baseCost: 3.5e23,
+    costStep: 12,
+    baseRate: 1.5e17,
+    rateStep: 6.5,
     growth: 1.12,
     growthStep: 0.005,
     ratio: 30,
-    value: 1.5e10,
+    value: 1.728e9,
   },
 };
+
+/**
+ * Cost unit per resource: hand-written costs (research, planets, some upgrades) are multiplied by it so they
+ * follow each tier's scale. Low tiers use raw amounts; high tiers use ~1 minute of their first converter / 100.
+ */
+export const COST_UNIT: Record<ResourceId, number> = {
+  ore: 1,
+  metal: 1,
+  alloy: 1,
+  component: TIER_BALANCE.component.baseRate * 0.6,
+  energy: TIER_BALANCE.energy.baseRate * 0.6,
+  crystal: TIER_BALANCE.crystal.baseRate * 0.6,
+  darkMatter: TIER_BALANCE.darkMatter.baseRate * 0.6,
+};
+
+export function scaledCost<T extends { res: ResourceId; amount: number }>(c: T): T {
+  return { ...c, amount: c.amount * COST_UNIT[c.res] };
+}
 
 export const BALANCE = {
   tickSeconds: 0.1,
@@ -118,14 +136,14 @@ export const BALANCE = {
 
   prestige: {
     /** stardust = floor(mult * (score / scoreDiv) ^ exponent) */
-    scoreDiv: 1e9,
-    exponent: 0.5,
+    scoreDiv: 2.5e11,
+    exponent: 0.25,
     unspentBonus: 0.01,
     /** singularities = floor((stardustEarnedThisCycle / div) ^ exponent) */
-    singularityDiv: 1e5,
+    singularityDiv: 2e5,
     singularityExponent: 1 / 3,
     singularityGlobal: 0.25,
-    blackHoleMinStardust: 1e5,
+    blackHoleMinStardust: 2e5,
   },
 
   events: {

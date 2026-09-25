@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { BALANCE } from '../src/config/balance';
 import { Decimal } from '../src/economy/decimal';
 import { computeModifiers } from '../src/economy/modifiers';
 import { applyProduction } from '../src/economy/production';
@@ -19,7 +20,7 @@ import { startResearch } from '../src/systems/research';
 import { runManagers } from '../src/systems/managers';
 import { claimMission, refreshMissions, missionComplete, dayKey } from '../src/systems/missions';
 import { tap } from '../src/systems/tap';
-import { activateBoost, useBoostToken } from '../src/systems/boosts';
+import { activateBoost, spendBoostToken } from '../src/systems/boosts';
 import { launchExpedition, claimExpedition } from '../src/systems/expeditions';
 import { catchComet, startEvent } from '../src/systems/events';
 
@@ -53,7 +54,7 @@ describe('purchases', () => {
 describe('prestige', () => {
   it('supernova grants stardust and resets the run but keeps research', () => {
     const s = createInitialState(0, 7);
-    s.run.produced.ore = new Decimal(4e9);
+    s.run.produced.ore = new Decimal(BALANCE.prestige.scoreDiv * 2 ** (1 / BALANCE.prestige.exponent) * 1.01);
     s.buildings['ore_0'] = 30;
     s.research.done['r_drills'] = true;
     const mods = computeModifiers(s);
@@ -80,10 +81,11 @@ describe('prestige', () => {
 
   it('black hole converts stardust into singularities and resets talents', () => {
     const s = createInitialState(0, 7);
-    s.prestige.stardustCycle = new Decimal(8e5);
+    const p = BALANCE.prestige;
+    s.prestige.stardustCycle = new Decimal(p.singularityDiv * 8);
     s.prestige.talents['t_prod_1'] = 3;
     doBlackHole(s, computeModifiers(s), 0);
-    expect(s.prestige.singularities.toNumber()).toBe(2);
+    expect(s.prestige.singularities.toNumber()).toBe(Math.floor(Math.pow(8, p.singularityExponent) + 1e-9));
     expect(s.prestige.talents).toEqual({});
     expect(s.prestige.stardust.toNumber()).toBe(0);
   });
@@ -93,7 +95,7 @@ describe('prestige', () => {
     s.prestige.supernovas = 1;
     expect(startChallenge(s, computeModifiers(s), 'c_weak', 0)).toBe(true);
     expect(computeModifiers(s).globalSources.challenge).toBeCloseTo(0.1);
-    s.run.produced.ore = new Decimal(2e9);
+    s.run.produced.ore = new Decimal(1e30);
     step(s, 1);
     expect(s.challenges.active).toBeNull();
     expect(s.challenges.completions['c_weak']).toBe(1);
@@ -135,9 +137,9 @@ describe('timed systems', () => {
     expect(activateBoost(s, mods, rates, 'overdrive')).toBe(false);
     step(s, 31 * 60);
     expect(computeModifiers(s).globalSources.boost).toBeUndefined();
-    expect(useBoostToken(s, 'overdrive')).toBe(false);
+    expect(spendBoostToken(s, 'overdrive')).toBe(false);
     s.boostTokens = 1;
-    expect(useBoostToken(s, 'overdrive')).toBe(true);
+    expect(spendBoostToken(s, 'overdrive')).toBe(true);
     expect(activateBoost(s, mods, rates, 'overdrive')).toBe(true);
   });
 

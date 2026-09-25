@@ -1,4 +1,4 @@
-import { TIER_BALANCE } from './balance';
+import { COST_UNIT, scaledCost } from './balance';
 import { BUILDINGS } from './buildings';
 import { RESOURCE_IDS, type Cost, type Effect, type ResourceId } from './types';
 
@@ -33,7 +33,7 @@ for (const b of BUILDINGS) {
   list.push({
     id: `u_${b.id}_1`,
     kind: 'building',
-    cost: { res: b.costRes, amount: b.baseCost * 20 },
+    cost: { res: b.costRes, amount: b.baseCost * 100 },
     effects: [{ k: 'mul', stat: 'building', building: b.id, v: 2 }],
     req: { type: 'building', id: b.id, count: 10 },
     label: { key: 'upg.building1', building: b.id },
@@ -91,9 +91,10 @@ tapCosts.forEach((amount, i) => {
 });
 
 // Tier-wide yield and efficiency.
-const yieldSteps = [10, 1e3, 1e5, 1e8, 1e11];
+const yieldSteps = [1, 1e4, 1e9, 1e15, 1e22];
 for (const tier of RESOURCE_IDS) {
-  const base = TIER_BALANCE[tier].baseCost;
+  // Typical stock scale of the resource when its tier opens.
+  const base = tier === 'ore' ? 1e4 : 100 * COST_UNIT[tier];
   yieldSteps.forEach((m, i) => {
     const amount = base * m;
     list.push({
@@ -126,7 +127,7 @@ const offline: Cost[] = [
   { res: 'alloy', amount: 1e5 },
   { res: 'energy', amount: 1e4 },
 ];
-offline.forEach((cost, i) => {
+offline.map(scaledCost).forEach((cost, i) => {
   list.push({
     id: `u_offline_${i}`,
     kind: 'offline',
@@ -146,7 +147,7 @@ const globals: Cost[] = [
   { res: 'darkMatter', amount: 5e3 },
   { res: 'darkMatter', amount: 5e7 },
 ];
-globals.forEach((cost, i) => {
+globals.map(scaledCost).forEach((cost, i) => {
   list.push({
     id: `u_global_${i}`,
     kind: 'global',
@@ -163,7 +164,7 @@ const events: Cost[] = [
   { res: 'component', amount: 1e4 },
   { res: 'crystal', amount: 1e5 },
 ];
-events.forEach((cost, i) => {
+events.map(scaledCost).forEach((cost, i) => {
   list.push({
     id: `u_event_${i}`,
     kind: 'event',

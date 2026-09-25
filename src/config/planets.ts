@@ -1,3 +1,4 @@
+import { scaledCost } from './balance';
 import type { Cost, Effect, PlanetId } from './types';
 
 export interface PlanetDef {
@@ -15,7 +16,7 @@ export interface PlanetDef {
   orbit: number;
 }
 
-export const PLANETS: readonly PlanetDef[] = [
+const RAW: PlanetDef[] = [
   {
     id: 'cryon',
     colonize: { res: 'metal', amount: 2e3 },
@@ -115,6 +116,8 @@ export const PLANETS: readonly PlanetDef[] = [
     orbit: 8,
   },
 ];
+
+export const PLANETS: readonly PlanetDef[] = RAW.map((p) => ({ ...p, colonize: scaledCost(p.colonize) }));
 
 export const PLANETS_BY_ID: Readonly<Record<PlanetId, PlanetDef>> = Object.fromEntries(
   PLANETS.map((p) => [p.id, p]),

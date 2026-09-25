@@ -55,7 +55,7 @@ export function buildingInput(def: BuildingDef, count: number, mods: Modifiers, 
   return new Decimal(count).mul(f);
 }
 
-export function computeFlows(s: GameState, mods: Modifiers): TierFlow[] {
+export function computeFlows(s: GameState, mods: Modifiers, mult = 1): TierFlow[] {
   return RESOURCE_IDS.map((tier) => {
     const active = isTierAllowed(tier, mods);
     const throttle = tier === 'ore' ? 1 : s.throttle[tier];
@@ -66,10 +66,10 @@ export function computeFlows(s: GameState, mods: Modifiers): TierFlow[] {
       for (const def of BUILDINGS_BY_TIER[tier]) {
         const n = s.buildings[def.id] ?? 0;
         if (n <= 0) continue;
-        const o = buildingOutput(def, n, mods, throttle);
+        const o = buildingOutput(def, n, mods, throttle * mult);
         perBuilding[def.id] = o;
         out = out.add(o);
-        need = need.add(buildingInput(def, n, mods, throttle));
+        if (def.input) need = need.add(o.mul(def.ratio * mods.ratio[def.tier]));
       }
     }
     return { tier, out, need, perBuilding, active };
@@ -82,7 +82,7 @@ export function computeFlows(s: GameState, mods: Modifiers): TierFlow[] {
  * efficiency (the bottleneck).
  */
 export function applyProduction(s: GameState, mods: Modifiers, dt: number, extraMult = 1): Rates {
-  const flows = computeFlows(s, mods);
+  const flows = computeFlows(s, mods, extraMult);
   const prod = resMap();
   const cons = resMap();
   const eff = Object.fromEntries(RESOURCE_IDS.map((r) => [r, 1])) as Record<ResourceId, number>;
@@ -104,7 +104,7 @@ export function applyProduction(s: GameState, mods: Modifiers, dt: number, extra
       }
     }
     eff[tier] = e;
-    const gain = flow.out.mul(dt * e * extraMult);
+    const gain = flow.out.mul(dt * e);
     s.resources[tier] = s.resources[tier].add(gain);
     s.run.produced[tier] = s.run.produced[tier].add(gain);
     s.stats.produced[tier] = s.stats.produced[tier].add(gain);
@@ -121,11 +121,12 @@ export function applyProduction(s: GameState, mods: Modifiers, dt: number, extra
 }
 
 /** Value of one tap before crit/combo. */
+/**
+ * Value of one tap before crit/combo: a flat part scaled by tap multipliers, plus a share of the ore
+ * production (tapPct) that is not multiplied again, so tapping cannot feed back into itself.
+ */
 export function tapBaseValue(mods: Modifiers, oreRate: Decimal): Decimal {
-  return oreRate
-    .mul(mods.tapPct)
-    .add(BALANCE.tap.base * Math.max(1, mods.global))
-    .mul(mods.tap);
+  return oreRate.mul(mods.tapPct).add(BALANCE.tap.base * Math.max(1, mods.global) * mods.tap);
 }
 
 export function comboMultiplier(count: number, comboMax: number): number {

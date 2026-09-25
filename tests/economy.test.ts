@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { BUILDINGS, BUILDINGS_BY_ID, BUILDINGS_BY_TIER } from '../src/config/buildings';
 import { UPGRADES } from '../src/config/upgrades';
+import { BALANCE, TIER_BALANCE } from '../src/config/balance';
 import { ACHIEVEMENTS } from '../src/config/achievements';
 import { TALENTS } from '../src/config/talents';
 import { RESEARCH, RESEARCH_BY_ID } from '../src/config/research';
@@ -139,17 +140,19 @@ describe('resource chain', () => {
 });
 
 describe('prestige', () => {
-  it('stardust follows sqrt(score)', () => {
-    expect(stardustForScore(new Decimal(1e8), 1).toNumber()).toBe(0);
-    expect(stardustForScore(new Decimal(1e9), 1).toNumber()).toBe(1);
-    expect(stardustForScore(new Decimal(1e11), 1).toNumber()).toBe(10);
-    expect(stardustForScore(new Decimal(1e11), 2).toNumber()).toBe(20);
+  it('stardust follows the power law', () => {
+    const { scoreDiv, exponent } = BALANCE.prestige;
+    expect(stardustForScore(new Decimal(scoreDiv / 2), 1).toNumber()).toBe(0);
+    expect(stardustForScore(new Decimal(scoreDiv), 1).toNumber()).toBe(1);
+    const big = new Decimal(scoreDiv).mul(1e8);
+    expect(stardustForScore(big, 1).toNumber()).toBe(Math.floor(Math.pow(1e8, exponent)));
+    expect(stardustForScore(big, 2).toNumber()).toBe(Math.floor(2 * Math.pow(1e8, exponent)));
   });
   it('score weights higher tiers', () => {
     const s = createInitialState(0);
     s.run.produced.ore = new Decimal(100);
     s.run.produced.metal = new Decimal(1);
-    expect(runScore(s).toNumber()).toBe(125);
+    expect(runScore(s).toNumber()).toBe(100 + TIER_BALANCE.metal.value);
   });
 });
 
