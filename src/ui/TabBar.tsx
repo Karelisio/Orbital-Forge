@@ -17,6 +17,7 @@ export function TabBar() {
   const flags = unlocked.split(',').map((v) => v === 'true');
   return (
     <nav
+      className="tabbar"
       style={{
         position: 'fixed',
         left: 0,
@@ -35,6 +36,7 @@ export function TabBar() {
           flags[i] ? (
             <button
               key={id}
+              className={`tab-btn ${tab === id ? 'on' : ''}`}
               data-tut={`tab-${id}`}
               onClick={() => {
                 if (id !== tab) {
@@ -57,6 +59,7 @@ export function TabBar() {
             >
               {tab === id && (
                 <motion.div
+                  className="tab-indicator"
                   layoutId="tab-glow"
                   style={{
                     position: 'absolute',
@@ -69,7 +72,9 @@ export function TabBar() {
                   }}
                 />
               )}
-              <Icon name={id} />
+              <span className={`tab-pill ${tab === id ? 'on' : ''}`}>
+                <Icon name={id} />
+              </span>
               <span style={{ fontSize: 10.5, fontWeight: 700 }}>{t(`tab.${id}`)}</span>
             </button>
           ) : (

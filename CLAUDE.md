@@ -66,6 +66,10 @@ android/      Capacitor project (appId com.karelisio.orbitalforge). Custom Immer
 - **i18n**: add every new key to both `fr.ts` and `en.ts` (TypeScript enforces parity through `Dict`).
 - **React perf**: `useGame` selectors must return primitives or use `useShallow` with primitive fields;
   format numbers inside selectors so components re-render only when the displayed text changes.
+- **Themes**: `settings.theme` = `neon` (default) or `material`. Material You colors are CSS variables computed
+  in `ui/theme/material.ts` from a seed (`materialSeed`: hex or `dynamic` = Android 12+ accent via the native
+  `MaterialColorsPlugin`); shapes live in the `:root[data-theme='material']` block of `ui/theme.css`. Style new
+  components with the shared classes/variables so both themes work.
 - **Accessibility settings** (OLED, text scale, reduced motion, low quality) are applied as data
   attributes / CSS variables on `<html>` in `ui/useGameEffects.ts`.
 

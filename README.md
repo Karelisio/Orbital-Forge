@@ -17,6 +17,13 @@ Tapez un astéroïde, construisez des foreuses puis toute une chaîne industriel
 | --- | --- | --- | --- |
 | ![Prestige](docs/screenshots/prestige.png) | ![Missions](docs/screenshots/missions.png) | ![Succès](docs/screenshots/achievements.png) | ![Stats](docs/screenshots/stats.png) |
 
+**Thème Material You** en option (Réglages → Thème) : palette tonale M3 générée depuis la couleur
+d’accent dynamique d’Android 12+ ou une couleur au choix.
+
+| Material You | Réglages |
+| --- | --- |
+| ![Material You](docs/screenshots/material-mine.png) | ![Réglages Material](docs/screenshots/material-settings.png) |
+
 ## Contenu
 
 - **Boucle de tap** : critiques (×10), combos, particules, haptique et chiffres flottants.
@@ -37,6 +44,7 @@ Tapez un astéroïde, construisez des foreuses puis toute une chaîne industriel
   améliorations automatiques.
 - **Gains hors ligne** : simulation réelle de toute la chaîne, plafond de 8 h extensible, écran de
   retour animé, notifications locales.
+- **Thèmes** : néon spatial (défaut) ou Material You (couleur dynamique Android 12+).
 - **Accessibilité** : mode OLED, taille du texte, réduction des animations, qualité basse, notation
   courte, scientifique ou ingénieur.
 

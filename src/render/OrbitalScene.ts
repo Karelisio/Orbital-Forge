@@ -233,6 +233,15 @@ export class OrbitalScene {
     this.mineLayer.addChild(this.glow, this.ringBack, this.asteroid, this.ringFront);
   }
 
+  private ringColors: [number, number] = [0x39f3ff, 0xff3df0];
+
+  /** Ring/glow colors (neon by default, Material You accent when that theme is active). */
+  setAccent(primary: number | null, secondary: number | null): void {
+    this.ringColors = [primary ?? 0x39f3ff, secondary ?? 0xff3df0];
+    if (this.glow && !this.frenzy) this.glow.tint = this.ringColors[0];
+    if (this.app) this.drawRing();
+  }
+
   private drawRing(): void {
     const { r } = this.center;
     const rx = r * 1.55;
@@ -248,8 +257,8 @@ export class OrbitalScene {
         const a = from + ((to - from) * i) / steps;
         pts.push(Math.cos(a) * rx, Math.sin(a) * ry);
       }
-      g.poly(pts, false).stroke({ width: 7, color: 0xff3df0, alpha: 0.18 });
-      g.poly(pts, false).stroke({ width: 2.5, color: 0x39f3ff, alpha: 0.95 });
+      g.poly(pts, false).stroke({ width: 7, color: this.ringColors[1], alpha: 0.18 });
+      g.poly(pts, false).stroke({ width: 2.5, color: this.ringColors[0], alpha: 0.95 });
       g.rotation = -0.3;
     }
   }
@@ -451,7 +460,7 @@ export class OrbitalScene {
       const k = (r / 100) * (1 + this.bounce * 0.06);
       this.asteroid.scale.set(k);
       this.glow.alpha = 0.16 + this.bounce * 0.15 + (this.frenzy ? 0.2 + 0.1 * Math.sin(this.time * 8) : 0);
-      this.glow.tint = this.frenzy ? 0xffd23f : 0x39f3ff;
+      this.glow.tint = this.frenzy ? 0xffd23f : this.ringColors[0];
       for (const d of this.drones) {
         d.angle += d.speed * dt * motion;
         const rx = r * d.radius * 1.3;

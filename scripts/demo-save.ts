@@ -65,5 +65,9 @@ s.tutorial = { step: 99, done: true };
 s.managers.ore = { enabled: true, mode: 'roi', target: null, reserve: 0.2 };
 refreshMissions(s, now);
 checkAchievements(s);
+if (process.env.THEME === 'material') {
+  s.settings.theme = 'material';
+  s.settings.materialSeed = process.env.SEED ?? 'dynamic';
+}
 s.lastSeen = now;
 process.stdout.write(wrap(s, now));

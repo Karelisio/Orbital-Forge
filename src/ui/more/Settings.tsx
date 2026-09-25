@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import type { Lang, Notation } from '../../engine/state';
+import type { Lang, Notation, ThemeId } from '../../engine/state';
+import { SEED_SWATCHES } from '../theme/material';
 import { useGame } from '../../store/gameStore';
 import { useUi } from '../../store/uiStore';
 import { useT } from '../../i18n';
@@ -115,6 +116,52 @@ export function Settings() {
           value={settings.lang}
           onChange={(lang: Lang) => updateSettings({ lang })}
         />
+      </Section>
+
+      <Section title={t('settings.theme')}>
+        <Seg
+          options={[
+            { value: 'neon', label: t('settings.theme.neon') },
+            { value: 'material', label: t('settings.theme.material') },
+          ]}
+          value={settings.theme}
+          onChange={(theme: ThemeId) => updateSettings({ theme })}
+        />
+        {settings.theme === 'material' && (
+          <Card className="col" style={{ gap: 8, marginTop: 8 }}>
+            <span className="small">{t('settings.materialSeed')}</span>
+            <div className="row" style={{ flexWrap: 'wrap', gap: 10 }}>
+              <button
+                className={`chip ${settings.materialSeed === 'dynamic' ? 'cyan' : ''}`}
+                style={{
+                  minHeight: 36,
+                  padding: '0 12px',
+                  borderWidth: settings.materialSeed === 'dynamic' ? 2 : 1,
+                }}
+                aria-pressed={settings.materialSeed === 'dynamic'}
+                onClick={() => updateSettings({ materialSeed: 'dynamic' })}
+              >
+                ✦ {t('settings.materialDynamic')}
+              </button>
+              {SEED_SWATCHES.map((c) => (
+                <button
+                  key={c}
+                  aria-label={c}
+                  aria-pressed={settings.materialSeed === c}
+                  onClick={() => updateSettings({ materialSeed: c })}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: c,
+                    boxShadow:
+                      settings.materialSeed === c ? '0 0 0 3px var(--bg), 0 0 0 5px var(--text)' : 'none',
+                  }}
+                />
+              ))}
+            </div>
+          </Card>
+        )}
       </Section>
 
       <Section title={t('settings.notation')}>

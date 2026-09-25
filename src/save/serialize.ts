@@ -81,6 +81,10 @@ export function deserializeState(json: string, now = Date.now()): GameState {
     isPlainObject(revived) && isPlainObject(revived.settings) ? revived.settings.buyAmount : undefined;
   if (buy === 'next' || buy === 'max') state.settings.buyAmount = buy;
   else if (buy !== 1 && buy !== 10 && buy !== 100) state.settings.buyAmount = 1;
+  if (state.settings.theme !== 'neon' && state.settings.theme !== 'material') state.settings.theme = 'neon';
+  if (state.settings.materialSeed !== 'dynamic' && !/^#[0-9a-f]{6}$/i.test(state.settings.materialSeed)) {
+    state.settings.materialSeed = 'dynamic';
+  }
   return state;
 }
 

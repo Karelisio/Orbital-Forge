@@ -5,6 +5,7 @@ import { Decimal } from '../economy/decimal';
 
 export type Notation = 'short' | 'scientific' | 'engineering';
 export type Lang = 'fr' | 'en';
+export type ThemeId = 'neon' | 'material';
 export type BuyAmount = 1 | 10 | 100 | 'next' | 'max';
 export type ManagerMode = 'cheapest' | 'roi' | 'target';
 
@@ -72,6 +73,9 @@ export interface Settings {
   haptics: boolean;
   notifications: boolean;
   oled: boolean;
+  theme: ThemeId;
+  /** Material You seed color: 'dynamic' (Android 12+ wallpaper accent) or a hex color. */
+  materialSeed: string;
   textScale: number;
   reduceMotion: boolean;
   lowQuality: boolean;
@@ -187,6 +191,8 @@ export function defaultSettings(): Settings {
     haptics: true,
     notifications: true,
     oled: false,
+    theme: 'neon',
+    materialSeed: 'dynamic',
     textScale: 1,
     reduceMotion: false,
     lowQuality: false,

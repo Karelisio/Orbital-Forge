@@ -376,3 +376,197 @@ input[type='range'] {
   background-size: 200% 100%;
   animation: shine 2.4s linear infinite;
 }
+
+/* ---------------------------------------------------------------------------------------------
+ * Material You theme (opt-in in Settings). Colors come from CSS variables set at runtime from the
+ * seed color (src/ui/theme/material.ts); this block only restyles shapes and component states.
+ * ------------------------------------------------------------------------------------------- */
+:root[data-theme='material'] {
+  --radius: 20px;
+  --on-primary: #381e72;
+  --primary-container: #4f378b;
+  --on-primary-container: #eaddff;
+  --secondary-container: #4a4458;
+  --on-secondary-container: #e8def8;
+  --surface-highest: #36343b;
+}
+
+:root[data-theme='material'] body,
+:root[data-theme='material'] html,
+:root[data-theme='material'] #root {
+  background: var(--bg);
+}
+
+:root[data-theme='material'] .card {
+  background: var(--panel);
+  border: none;
+  border-radius: var(--radius);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+:root[data-theme='material'] .h1 {
+  background: none;
+  color: var(--text);
+  font-weight: 500;
+  letter-spacing: 0;
+  font-size: 1.55em;
+}
+
+:root[data-theme='material'] .title {
+  color: var(--cyan);
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+:root[data-theme='material'] .btn {
+  border-radius: 999px;
+  border: none;
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  font-weight: 600;
+  box-shadow: none;
+}
+:root[data-theme='material'] .btn.primary {
+  background: var(--cyan);
+  color: var(--on-primary);
+}
+:root[data-theme='material'] .btn.ghost {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--cyan);
+}
+:root[data-theme='material'] .btn.gold {
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+:root[data-theme='material'] .btn.danger {
+  background: #93000a;
+  color: #ffdad6;
+}
+:root[data-theme='material'] .btn:disabled,
+:root[data-theme='material'] .btn[aria-disabled='true'] {
+  opacity: 0.38;
+  filter: none;
+}
+
+:root[data-theme='material'] .seg {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 0;
+  overflow: hidden;
+}
+:root[data-theme='material'] .seg button {
+  border-radius: 0;
+  color: var(--text);
+  font-weight: 600;
+  min-height: 40px;
+}
+:root[data-theme='material'] .seg button + button {
+  border-left: 1px solid var(--border-strong);
+}
+:root[data-theme='material'] .seg button.on {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+  box-shadow: none;
+}
+
+:root[data-theme='material'] .chip {
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+:root[data-theme='material'] .bar {
+  height: 4px;
+  background: var(--surface-highest);
+}
+:root[data-theme='material'] .bar > div {
+  background: var(--cyan);
+}
+
+:root[data-theme='material'] .toggle {
+  width: 52px;
+  height: 32px;
+  background: var(--surface-highest);
+  box-shadow: inset 0 0 0 2px var(--border-strong);
+}
+:root[data-theme='material'] .toggle::after {
+  top: 8px;
+  left: 8px;
+  width: 16px;
+  height: 16px;
+  background: var(--border-strong);
+  transition:
+    transform 0.2s,
+    width 0.2s,
+    height 0.2s,
+    top 0.2s,
+    left 0.2s;
+}
+:root[data-theme='material'] .toggle.on {
+  background: var(--cyan);
+  box-shadow: none;
+}
+:root[data-theme='material'] .toggle.on::after {
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  background: var(--on-primary);
+  transform: translateX(20px);
+}
+
+:root[data-theme='material'] .badge {
+  background: var(--danger);
+  color: #690005;
+}
+
+:root[data-theme='material'] .shine {
+  background-image: none;
+  animation: none;
+}
+
+:root[data-theme='material'] .tabbar {
+  background: var(--panel) !important;
+  border-top: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+:root[data-theme='material'] .tabbar .tab-indicator {
+  display: none;
+}
+:root[data-theme='material'] .tab-btn {
+  color: var(--muted) !important;
+}
+:root[data-theme='material'] .tab-btn.on {
+  color: var(--text) !important;
+}
+.tab-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 30px;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+:root[data-theme='material'] .tab-pill.on {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+
+:root[data-theme='material'] .sheet {
+  background: var(--panel-solid) !important;
+  border: none !important;
+  border-radius: 28px 28px 0 0 !important;
+  box-shadow: none !important;
+}
+
+:root[data-theme='material'] input[type='range'] {
+  accent-color: var(--cyan);
+}

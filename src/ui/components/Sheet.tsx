@@ -32,6 +32,7 @@ export function Sheet({
       }}
     >
       <motion.div
+        className="sheet"
         role="dialog"
         aria-modal
         initial={{ y: 60, opacity: 0 }}

@@ -7,6 +7,7 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(ImmersivePlugin.class);
+        registerPlugin(MaterialColorsPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

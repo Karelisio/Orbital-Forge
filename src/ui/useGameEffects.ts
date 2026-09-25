@@ -15,6 +15,29 @@ import { onGameEvent, useGame } from '../store/gameStore';
 import { useUi } from '../store/uiStore';
 import { totalBuildings } from '../systems/counters';
 import type { GameLoop } from '../engine/loop';
+import type { ThemeId } from '../engine/state';
+import { getSystemAccent } from '../platform/materialColors';
+import { DEFAULT_SEED, MATERIAL_VAR_NAMES, materialCssVars } from './theme/material';
+
+let themeRequest = 0;
+
+/** Sets (or clears) the Material You CSS variables on <html>. */
+async function applyThemeVars(theme: ThemeId, seed: string, oled: boolean): Promise<void> {
+  const req = ++themeRequest;
+  const root = document.documentElement;
+  if (theme !== 'material') {
+    for (const name of MATERIAL_VAR_NAMES) root.style.removeProperty(name);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', oled ? '#000000' : '#05060f');
+    scene.setAccent(null, null);
+    return;
+  }
+  const resolved = seed === 'dynamic' ? ((await getSystemAccent()) ?? DEFAULT_SEED) : seed;
+  if (req !== themeRequest) return;
+  const vars = materialCssVars(resolved, oled);
+  for (const [name, value] of Object.entries(vars)) root.style.setProperty(name, value);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', vars['--bg']);
+  scene.setAccent(hexToNum(vars['--cyan']), hexToNum(vars['--magenta']));
+}
 
 /** Wires settings, game events, and scene state to side effects (audio, haptics, toasts, renderer). */
 export function useGameEffects(loop: GameLoop | null): void {
@@ -29,6 +52,8 @@ export function useGameEffects(loop: GameLoop | null): void {
       setHapticsEnabled(st.haptics);
       const root = document.documentElement;
       root.dataset.oled = String(st.oled);
+      root.dataset.theme = st.theme;
+      void applyThemeVars(st.theme, st.materialSeed, st.oled);
       root.dataset.reduceMotion = String(st.reduceMotion);
       root.style.setProperty('--scale', String(st.textScale));
       scene.setOptions({ lowQuality: st.lowQuality, reduceMotion: st.reduceMotion });
