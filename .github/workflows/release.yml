@@ -60,6 +60,9 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          # The default 'tools' package no longer exists in the SDK repository.
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
 
       - name: Setup Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
