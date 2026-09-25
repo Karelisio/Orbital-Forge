@@ -194,7 +194,7 @@ export function defaultSettings(): Settings {
     keepAwake: false,
     buyAmount: 1,
     autoSupernova: false,
-    autoSupernovaMult: 2,
+    autoSupernovaMult: 0.5,
   };
 }
 
