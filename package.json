@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "simulate": "tsx scripts/simulate.ts",
-    "assets": "capacitor-assets generate --android",
+    "assets": "node scripts/render-assets.mjs && capacitor-assets generate --android",
     "cap:sync": "cap sync android",
     "android:version": "node scripts/version-from-tag.mjs"
   },
