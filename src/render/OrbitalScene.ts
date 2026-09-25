@@ -126,6 +126,8 @@ export class OrbitalScene {
     this.root.addChild(this.stormOverlay, this.flash);
     this.onResize();
     if (this.lastRect) this.setAsteroidRect(...this.lastRect);
+    this.setDrones(this.pendingDrones);
+    this.setPlanets(this.pendingPlanets);
     window.addEventListener('resize', this.onResize);
     app.ticker.add((t) => this.update(Math.min(0.05, t.deltaMS / 1000)));
   }
@@ -188,11 +190,16 @@ export class OrbitalScene {
       const rad = 100 * (0.82 + r() * 0.22);
       pts.push(Math.cos(a) * rad, Math.sin(a) * rad);
     }
-    g.poly(pts).fill({ color: 0x5b4636 });
-    // Shading layers.
-    g.poly(pts.map((v) => v * 0.9)).fill({ color: 0x7a5f48, alpha: 0.9 });
-    g.circle(-25, -30, 55).fill({ color: 0x9c7b5c, alpha: 0.35 });
-    g.circle(30, 35, 60).fill({ color: 0x2b2019, alpha: 0.35 });
+    g.poly(pts).fill({ color: 0x4a3829 });
+    // Shading: concentric lit layers shifted toward the light (top-left), always inside the silhouette.
+    for (let k = 1; k <= 4; k++) {
+      const f = 1 - k * 0.14;
+      const off = -k * 5;
+      g.poly(pts.map((v) => v * f + off)).fill({
+        color: [0x5b4636, 0x6e5440, 0x80634b, 0x94765a][k - 1],
+        alpha: 0.9,
+      });
+    }
     for (let i = 0; i < 9; i++) {
       const cx = (r() - 0.5) * 120;
       const cy = (r() - 0.5) * 120;
@@ -312,7 +319,12 @@ export class OrbitalScene {
     else this.app.ticker.start();
   }
 
+  private pendingDrones = 0;
+  private pendingPlanets: number[] = [];
+
   setDrones(n: number): void {
+    this.pendingDrones = n;
+    if (!this.app) return;
     const want = Math.min(this.opts.lowQuality ? 8 : 20, n);
     while (this.drones.length < want) {
       const s = new Sprite(this.droneTex);
@@ -332,6 +344,8 @@ export class OrbitalScene {
   }
 
   setPlanets(colors: number[]): void {
+    this.pendingPlanets = colors;
+    if (!this.app) return;
     while (this.planets.length > colors.length) this.planets.pop()?.sprite.destroy();
     colors.forEach((c, i) => {
       let p = this.planets[i];

@@ -52,7 +52,9 @@ export const useUi = create<UiStore>((set, get) => ({
   modals: [],
   toasts: [],
   debugUnlocked: false,
-  setTab: (tab) => set({ tab, moreSection: tab === 'more' ? get().moreSection : null }),
+  // Tapping the active "more" tab again goes back to its section grid.
+  setTab: (tab) =>
+    set({ tab, moreSection: tab === 'more' && get().tab !== 'more' ? get().moreSection : null }),
   setMoreSection: (moreSection) => set({ moreSection }),
   openModal: (m) => set((s) => ({ modals: [...s.modals, m] })),
   closeModal: () => set((s) => ({ modals: s.modals.slice(0, -1) })),

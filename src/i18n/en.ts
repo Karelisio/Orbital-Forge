@@ -577,6 +577,26 @@ export const en: Dict = {
   'tut.skip': 'Skip',
   'tut.next': 'Next',
 
+  // More tab sections
+  'more.section.missions': 'Missions',
+  'more.section.achievements': 'Achievements',
+  'more.section.artifacts': 'Artifacts',
+  'more.section.expeditions': 'Expeditions',
+  'more.section.managers': 'Station AI',
+  'more.section.boosts': 'Boosts',
+  'more.section.stats': 'Statistics',
+  'more.section.settings': 'Settings',
+  'more.section.challenges': 'Challenges',
+  'ach.filter.all': 'All',
+  'ach.filter.unlocked': 'Unlocked',
+  'ach.filter.locked': 'Locked',
+  'artifacts.full': 'Slots full: unequip an artifact first.',
+  'artifacts.unequipped': 'Artifact unequipped',
+  'exp.launched': 'Expedition launched!',
+  'exp.emptyLoot': 'Nothing to report this time.',
+  'settings.debug': 'Open debug menu',
+  'stats.producedTitle': 'Total production',
+
   // Debug
   'debug.title': 'Debug',
   'debug.enabled': 'Debug menu enabled',

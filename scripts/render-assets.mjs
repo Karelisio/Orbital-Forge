@@ -7,10 +7,14 @@ const require = createRequire(import.meta.url);
 const sharp = require('sharp');
 
 const icon = readFileSync('assets/icon.svg', 'utf8');
-const layer = (id) => icon.replace(/<g id="(background|foreground)">[\s\S]*?\n  <\/g>\n/g, (m, name) => (name === id ? m : ''));
+const layer = (id) =>
+  icon.replace(/<g id="(background|foreground)">[\s\S]*?\n  <\/g>\n/g, (m, name) => (name === id ? m : ''));
 
 // Adaptive icon foreground must fit in the central 66% safe zone: scale it down on a transparent canvas.
-const fg = layer('foreground').replace('<g id="foreground">', '<g id="foreground" transform="translate(512 512) scale(0.72) translate(-512 -512)">');
+const fg = layer('foreground').replace(
+  '<g id="foreground">',
+  '<g id="foreground" transform="translate(512 512) scale(0.72) translate(-512 -512)">',
+);
 const bg = layer('background');
 
 function splash(dark) {

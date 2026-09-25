@@ -575,6 +575,26 @@ export const fr = {
   'tut.skip': 'Passer',
   'tut.next': 'Suivant',
 
+  // More tab sections
+  'more.section.missions': 'Missions',
+  'more.section.achievements': 'Succès',
+  'more.section.artifacts': 'Artefacts',
+  'more.section.expeditions': 'Expéditions',
+  'more.section.managers': 'IA de station',
+  'more.section.boosts': 'Boosts',
+  'more.section.stats': 'Statistiques',
+  'more.section.settings': 'Réglages',
+  'more.section.challenges': 'Défis',
+  'ach.filter.all': 'Tous',
+  'ach.filter.unlocked': 'Débloqués',
+  'ach.filter.locked': 'Verrouillés',
+  'artifacts.full': 'Emplacements pleins : retire un artefact d’abord.',
+  'artifacts.unequipped': 'Artefact retiré',
+  'exp.launched': 'Expédition lancée !',
+  'exp.emptyLoot': 'Rien à signaler cette fois.',
+  'settings.debug': 'Ouvrir le menu debug',
+  'stats.producedTitle': 'Production totale',
+
   // Debug
   'debug.title': 'Debug',
   'debug.enabled': 'Menu debug activé',
