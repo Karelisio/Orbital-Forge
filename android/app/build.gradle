@@ -1,0 +1,101 @@
+apply plugin: 'com.android.application'
+
+// ---- Versioning: derived from the git tag (vMAJOR.MINOR.PATCH) ----
+// CI passes APP_VERSION (e.g. "v1.2.3"); local builds fall back to `git describe`.
+def resolveVersionTag() {
+    def env = System.getenv('APP_VERSION')
+    if (env) return env.trim()
+    try {
+        def proc = new ProcessBuilder('git', 'describe', '--tags', '--abbrev=0', '--match', 'v*')
+                .directory(rootProject.projectDir)
+                .redirectErrorStream(true)
+                .start()
+        def out = proc.inputStream.text.trim()
+        if (proc.waitFor() == 0 && out) return out
+    } catch (ignored) {
+    }
+    return 'v0.1.0'
+}
+
+def versionTag = resolveVersionTag()
+def versionMatch = (versionTag =~ /v?(\d+)\.(\d+)\.(\d+)/)
+def versionParts = versionMatch.find() ? [versionMatch.group(1), versionMatch.group(2), versionMatch.group(3)]*.toInteger() : [0, 1, 0]
+def (vMajor, vMinor, vPatch) = versionParts
+def computedVersionName = "${vMajor}.${vMinor}.${vPatch}"
+def computedVersionCode = vMajor * 1000000 + vMinor * 1000 + vPatch
+if (computedVersionCode < 1) computedVersionCode = 1
+
+// ---- Release signing: keystore.properties (local) or environment variables (CI) ----
+def keystorePropsFile = rootProject.file('keystore.properties')
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+def signingValue = { String prop, String env -> keystoreProps.getProperty(prop) ?: System.getenv(env) }
+def releaseStoreFile = signingValue('storeFile', 'ANDROID_KEYSTORE_PATH')
+
+android {
+    namespace = "com.karelisio.orbitalforge"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.karelisio.orbitalforge"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode computedVersionCode
+        versionName computedVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        release {
+            if (releaseStoreFile) {
+                storeFile file(releaseStoreFile)
+                storePassword signingValue('storePassword', 'ANDROID_KEYSTORE_PASSWORD')
+                keyAlias signingValue('keyAlias', 'ANDROID_KEY_ALIAS')
+                keyPassword signingValue('keyPassword', 'ANDROID_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (releaseStoreFile) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

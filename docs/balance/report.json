@@ -1,0 +1,21 @@
+{
+  "hours": 72,
+  "firstSupernova": "1.10 h",
+  "firstBlackHole": "51.37 h",
+  "supernovas": 25,
+  "blackHoles": 1,
+  "longestGapFirstRunMin": 6.58,
+  "tiers": {
+    "ore": "0.00 h",
+    "metal": "0.02 h",
+    "alloy": "0.11 h",
+    "component": "0.64 h",
+    "energy": "4.94 h",
+    "crystal": "13.10 h",
+    "darkMatter": "28.92 h"
+  },
+  "researchDone": 24,
+  "achievements": 141,
+  "stardustTotal": "491323751",
+  "singularities": "1"
+}

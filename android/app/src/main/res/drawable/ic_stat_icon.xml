@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Monochrome notification icon: asteroid with orbit ring. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,6.5l2.3,0.4 2.1,1.4 1.2,2.3 0.2,2.3 -0.9,2.3 -1.9,1.8 -2.3,1 -2.6,-0.3 -2.2,-1.1 -1.3,-2.1 -0.4,-2.5 0.7,-2.6 1.6,-2.1 1.9,-0.7z" />
+    <path
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.3"
+        android:fillColor="#00000000"
+        android:pathData="M2.5,14.5c-1,-1.8 3.2,-4.4 9.3,-5.8 6.1,-1.4 11,-1 11.6,0.9" />
+</vector>

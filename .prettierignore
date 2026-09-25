@@ -1,0 +1,9 @@
+dist
+android
+node_modules
+package-lock.json
+sim-output
+*.md
+docs/balance
+assets
+public
