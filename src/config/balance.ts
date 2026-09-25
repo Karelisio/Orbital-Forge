@@ -140,10 +140,10 @@ export const BALANCE = {
     exponent: 0.25,
     unspentBonus: 0.01,
     /** singularities = floor((stardustEarnedThisCycle / div) ^ exponent) */
-    singularityDiv: 2e5,
+    singularityDiv: 3e8,
     singularityExponent: 1 / 3,
     singularityGlobal: 0.25,
-    blackHoleMinStardust: 2e5,
+    blackHoleMinStardust: 3e8,
   },
 
   events: {
